@@ -1,4 +1,4 @@
-const tileStatuses = {
+export const tileStatuses = {
   HIDDEN: "hidden",
   NUMBER: "number",
   MARKED: "marked",
@@ -33,6 +33,18 @@ export default function createBoard(boardSize = 10, numOfMines = 10) {
   }
 
   return board;
+}
+
+export function markTile(tile) {
+  if (tile.status !== tileStatuses.HIDDEN && tile.status !== tileStatuses.MARKED) {
+    return;
+  }
+
+  if (tile.status === tileStatuses.HIDDEN) {
+    tile.status = tileStatuses.MARKED;
+  } else {
+    tile.status = tileStatuses.HIDDEN;
+  }
 }
 
 function generateMinePositions(boardSize, numOfMines) {
