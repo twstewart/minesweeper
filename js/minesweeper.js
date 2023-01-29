@@ -47,6 +47,28 @@ export function markTile(tile) {
   }
 }
 
+export function revealTile(tile, board) {
+  if (tile.status !== tileStatuses.HIDDEN) {
+    return;
+  }
+
+  if (tile.mine) {
+    tile.status = tileStatuses.MINE;
+    return;
+  }
+
+  tile.status = tileStatuses.NUMBER;
+
+  const adjacentTiles = findNearbyTiles(tile, board);
+  const mines = adjacentTiles.filter((tile) => tile.mine);
+
+  if (mines.length === 0) {
+    adjacentTiles.forEach((tile) => revealTile(tile, board));
+  } else {
+    tile.el.textContent = mines.length;
+  }
+}
+
 function generateMinePositions(boardSize, numOfMines) {
   const positions = [];
 
@@ -70,4 +92,20 @@ function positionMatch(objA, objB) {
 
 function randNum(boardSize) {
   return Math.trunc(Math.random() * boardSize);
+}
+
+function findNearbyTiles(tile, board) {
+  const nearbyTiles = [];
+
+  for (let xOffset = -1; xOffset <= 1; xOffset += 1) {
+    for (let yOffset = -1; yOffset <= 1; yOffset += 1) {
+      const nearbyTile = board[tile.x + xOffset]?.[tile.y + yOffset];
+
+      if (nearbyTile) {
+        nearbyTiles.push(nearbyTile);
+      }
+    }
+  }
+
+  return nearbyTiles;
 }
